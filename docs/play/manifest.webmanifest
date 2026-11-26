@@ -1,0 +1,15 @@
+{
+  "name": "Nearby — find the people you came with",
+  "short_name": "Nearby",
+  "description": "Coarse proximity for a group inside a venue, from anchor check-ins. No GPS, no coordinates, no location history.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f5f2",
+  "theme_color": "#101418",
+  "lang": "en-IN",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

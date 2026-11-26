@@ -1,0 +1,35 @@
+NOTICE
+======
+
+Nearby — https://github.com/drsamonline/app-nearby
+Copyright 2026 Dr Sohil Momin. Licensed under PolyForm Noncommercial 1.0.0 (see LICENSE).
+
+Third-party components
+----------------------
+
+None. Nearby has no third-party dependency and no CDN.
+
+Vendored from this project's own kits (same licence, same author), copied verbatim on 26/11/2026:
+
+- web-kit 0.1.0 — docs/play/web-kit.js — the offline shell, storage helpers and PWA registration
+- export-kit 1.0.0 — docs/play/export-kit.js — Blob download, used for the room export
+
+Neither kit is modified. Neither makes a network request.
+
+The transport gap
+-----------------
+
+The LAN transport is NOT built. The engine takes a bus with send/on and ships with a same-device bus, so
+the proximity logic runs and can be tested. A real peer link over the venue network would be a runtime
+network call, which this fleet does not make, and faking it would misrepresent the one thing this app
+exists to do.
+
+What the app does do — the venue graph, the three tiers, the meet-point pins, the board — is real logic,
+tested, with no coordinates anywhere.
+
+Privacy
+-------
+
+There is no latitude, longitude, distance in metres, bearing or radius in this app. Proximity is a hop
+count between named anchors, reduced to one of three words, and the hop count is not shown to the user.
+A check-in replaces the previous one, so there is no trail.

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nearby — find the people you came with</title>
+<meta name="description" content="Coarse proximity for a group inside a venue, from anchor check-ins. No GPS, no coordinates, no location history.">
+<meta name="theme-color" content="#101418">
+<style>
+  :root{--bg:#f6f5f2;--panel:#fff;--ink:#14181d;--muted:#5d666f;--line:#d9d6cf;--accent:#2f4a7a}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans",sans-serif}
+  main{max-width:760px;margin:0 auto;padding:48px 20px 64px}
+  h1{font-size:33px;line-height:1.15;letter-spacing:-.02em;margin:0 0 10px}
+  .lede{font-size:18px;color:var(--muted);margin:0 0 26px}
+  .cta{display:inline-block;background:var(--accent);color:#fff;text-decoration:none;font-weight:600;padding:12px 20px;border-radius:9px}
+  .status{margin:26px 0;padding:14px 16px;border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:9px;background:var(--panel);font-size:14px}
+  .status b{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:4px}
+  h2{font-size:17px;margin:30px 0 8px}
+  ul{padding-left:20px}li{margin:4px 0}
+  code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;background:#eeede9;padding:1px 5px;border-radius:4px}
+  table{border-collapse:collapse;width:100%;font-size:14px;margin-top:8px}
+  th,td{text-align:left;border-bottom:1px solid var(--line);padding:7px 8px;vertical-align:top}
+  th{color:var(--muted);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.06em}
+  .gap{margin:22px 0 0;padding:12px 14px;border:1px solid #e3c9c9;border-left:4px solid #a02a2a;border-radius:9px;background:#fdf3f3;color:#7d1f1f;font-size:13.5px}
+  footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font-size:12px}
+  a{color:var(--accent)}
+</style></head>
+<body><main>
+  <h1>Nearby</h1>
+  <p class="lede">Find the people you came with, inside a venue — a mela, a mall, a stadium. Coarse proximity from anchor check-ins: <strong>no GPS, no coordinates, no location history.</strong></p>
+  <a class="cta" href="play/index.html">Open Nearby</a>
+
+  <p class="gap"><strong>The LAN transport is not built.</strong> The demo runs the whole room on one device so the proximity logic can be seen and tested. A real link between phones over the venue network is named as absent rather than faked — a demo that pretended to do it would be a lie about the one thing this app exists for.</p>
+
+  <div class="status">
+    <b>Status</b>
+    Built and working: rooms and members; anchor check-ins that <em>replace</em> the last one; three proximity tiers (nearest · same zone · far) from a hop count over a venue graph; meet-point pins with a direction and an age; a lost-and-found board; a quick broadcast.
+    <br><b>Release</b>: Windows EXE, Android APK and Linux binary, built from this source in CI — <a href="https://github.com/drsamonline/app-nearby/releases/tag/app-latest">app-latest</a>.
+    <br><b>Not built</b>: the LAN transport, and therefore real multi-device presence. Also no QR joining — the room is created on one device.
+  </div>
+
+  <h2>What it does</h2>
+  <ul>
+    <li>Puts members in a room and asks each to check in at a fixed anchor — a gate, a hall, a stall.</li>
+    <li>Works out how near someone is as one of three tiers, from how many anchors apart they are.</li>
+    <li>Drops a meet-point pin at an anchor, and shows each person a direction to it rather than a distance.</li>
+    <li>Carries a lost-and-found board and a quick “I'm at the main gate”.</li>
+  </ul>
+
+  <h2>What it will not do</h2>
+  <ul>
+    <li><strong>Store a coordinate.</strong> There is no latitude, longitude, distance in metres or bearing anywhere in the engine.</li>
+    <li><strong>Keep a location history.</strong> A check-in replaces the last one.</li>
+    <li><strong>Use GPS or the internet.</strong> No <code>fetch</code>, no endpoint; CSP <code>connect-src 'none'</code>.</li>
+    <li><strong>Claim a transport it does not have.</strong> The LAN link is named as absent on the page and in the README.</li>
+  </ul>
+
+  <h2>When things go wrong</h2>
+  <table>
+    <tr><th>Case</th><th>What happens</th></tr>
+    <tr><td>Bad input</td><td>A room or member with no name, a check-in at an anchor that does not exist, a pin not at an anchor, a broadcast with no words — each refused with the field named.</td></tr>
+    <tr><td>No network</td><td>Nothing changes; there is no network code at all.</td></tr>
+    <tr><td>Storage full or unavailable</td><td><strong>NOT SAVED</strong>, and the room on screen is unchanged.</td></tr>
+    <tr><td>Corrupt saved state</td><td>Reported and offered for export; never replaced with an empty room.</td></tr>
+  </table>
+
+  <h2>How to run it</h2>
+  <ul>
+    <li><strong>Here</strong>: <a href="play/index.html">play/index.html</a>, or install it from your browser's menu.</li>
+    <li><strong>Offline file</strong>: open <code>docs/play/index.html</code> straight from disk.</li>
+    <li><strong>Tests</strong>: <code>node tests/self-tests.js</code>.</li>
+  </ul>
+
+  <footer>PolyForm Noncommercial 1.0.0 · (c) 2026 Dr Sohil Momin · <a href="https://github.com/drsamonline/app-nearby">source</a></footer>
+</main></body></html>
