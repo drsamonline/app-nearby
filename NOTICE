@@ -19,7 +19,7 @@ Neither kit is modified. Neither makes a network request.
 The transport gap
 -----------------
 
-The LAN transport is NOT built. The engine takes a bus with send/on and ships with a same-device bus, so
+A LAN transport does exist in this estate — `lan-kit`, zero dependencies, SSE and POST — but it is not wired into this app. What ships here is a same-device bus, so the room logic runs and can be tested. The engine takes a bus with send/on and ships with a same-device bus, so
 the proximity logic runs and can be tested. A real peer link over the venue network would be a runtime
 network call, which this fleet does not make, and faking it would misrepresent the one thing this app
 exists to do.
