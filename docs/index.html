@@ -1,74 +1,101 @@
 <!DOCTYPE html>
 <html lang="en-IN">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Nearby — find the people you came with</title>
-<meta name="description" content="Coarse proximity for a group inside a venue, from anchor check-ins. No GPS, no coordinates, no location history.">
-<meta name="theme-color" content="#101418">
+<meta name="description" content="Coarse proximity for a group inside a venue: three words, never a coordinate.">
+<meta name="theme-color" content="#101720">
 <style>
-  :root{--bg:#f6f5f2;--panel:#fff;--ink:#14181d;--muted:#5d666f;--line:#d9d6cf;--accent:#2f4a7a}
+  :root{--night:#101720;--panel:#16202b;--line:#243343;--fg:#d5e2ee;--dim:#7d92a6;--cyan:#4fd1c5;--amber:#e0a63f;--rose:#d1698a;
+        --mono:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+        --s0:clamp(11px,.4vw + 10px,12.5px);--s1:clamp(13.5px,.55vw + 12px,16px);--s2:clamp(18px,1.2vw + 14px,26px);
+        --display:clamp(30px,5.4vw,66px);--gut:clamp(16px,3.4vw,58px)}
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans",sans-serif}
-  main{max-width:760px;margin:0 auto;padding:48px 20px 64px}
-  h1{font-size:33px;line-height:1.15;letter-spacing:-.02em;margin:0 0 10px}
-  .lede{font-size:18px;color:var(--muted);margin:0 0 26px}
-  .cta{display:inline-block;background:var(--accent);color:#fff;text-decoration:none;font-weight:600;padding:12px 20px;border-radius:9px}
-  .status{margin:26px 0;padding:14px 16px;border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:9px;background:var(--panel);font-size:14px}
-  .status b{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:4px}
-  h2{font-size:17px;margin:30px 0 8px}
-  ul{padding-left:20px}li{margin:4px 0}
-  code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;background:#eeede9;padding:1px 5px;border-radius:4px}
-  table{border-collapse:collapse;width:100%;font-size:14px;margin-top:8px}
-  th,td{text-align:left;border-bottom:1px solid var(--line);padding:7px 8px;vertical-align:top}
-  th{color:var(--muted);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.06em}
-  .gap{margin:22px 0 0;padding:12px 14px;border:1px solid #e3c9c9;border-left:4px solid #a02a2a;border-radius:9px;background:#fdf3f3;color:#7d1f1f;font-size:13.5px}
-  footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font-size:12px}
-  a{color:var(--accent)}
+  body{margin:0;background:var(--night);color:var(--fg);font-family:var(--mono);font-size:var(--s1)}
+  .board{max-width:1660px;margin:0 auto;padding:0 0 58px}
+  .bar{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;padding:10px var(--gut);border-bottom:1px solid var(--line);
+       font-size:var(--s0);letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
+  .bar b{color:var(--cyan);font-weight:400}
+  .head{display:grid;gap:clamp(14px,2.2vw,36px);padding:clamp(22px,3.2vw,50px) var(--gut) clamp(14px,2vw,26px);grid-template-columns:1fr}
+  @media (min-width:960px){.head{grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr);align-items:end}}
+  h1{font-size:var(--display);line-height:.96;margin:0;letter-spacing:-.03em;font-weight:600;color:#eaf3f8}
+  h1 span{color:var(--cyan)}
+  .head p{margin:10px 0 0;font-size:var(--s2);line-height:1.4;color:var(--dim);max-width:44ch}
+  .legend{display:flex;gap:clamp(8px,1.2vw,18px);flex-wrap:wrap}
+  .lg{border:1px solid var(--line);background:var(--panel);padding:9px 13px;font-size:var(--s0);color:var(--dim)}
+  .lg b{display:block;color:var(--fg);font-size:var(--s1);margin-top:3px}
+  /* the venue board: anchors on a grid, people as pips, 1 column phone -> 3 wide */
+  .venue{margin:0 var(--gut);border:1px solid var(--line);background:var(--panel);padding:clamp(14px,1.8vw,24px)}
+  .anchors{display:grid;gap:clamp(8px,1.1vw,16px);grid-template-columns:1fr}
+  @media (min-width:700px){.anchors{grid-template-columns:repeat(2,1fr)}}
+  @media (min-width:1200px){.anchors{grid-template-columns:repeat(4,1fr)}}
+  .a{border:1px solid var(--line);background:#0e161f;padding:clamp(10px,1.3vw,16px)}
+  .a .k{font-size:var(--s0);letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+  .a .v{font-size:var(--s1);margin-top:5px;color:#eaf3f8}
+  .a.near{border-left:3px solid var(--cyan)}
+  .a.same{border-left:3px solid var(--amber)}
+  .a.far{border-left:3px solid var(--line);opacity:.72}
+  .a .tier{font-size:var(--s0);color:var(--dim);margin-top:4px}
+  .pin{margin-top:clamp(12px,1.6vw,20px);border:1px dashed var(--rose);padding:10px 12px;font-size:var(--s0);color:#e6b7c6}
+  .cols{display:grid;gap:clamp(18px,2.6vw,46px);padding:clamp(18px,2.6vw,36px) var(--gut) 0;grid-template-columns:1fr}
+  @media (min-width:860px){.cols{grid-template-columns:repeat(2,1fr)}}
+  @media (min-width:1380px){.cols{grid-template-columns:repeat(3,1fr)}}
+  h2{font-size:var(--s0);letter-spacing:.16em;text-transform:uppercase;color:var(--cyan);margin:0 0 6px}
+  p{font-size:var(--s1);line-height:1.72;margin:0 0 12px}
+  .go{display:inline-block;border:1px solid var(--cyan);color:var(--cyan);padding:12px 22px;text-decoration:none;
+      font-size:var(--s0);letter-spacing:.16em;text-transform:uppercase;margin-top:6px}
+  .go:hover{background:var(--cyan);color:#101720}
+  .sponsor{margin:clamp(22px,3vw,38px) var(--gut) 0;border:1px solid var(--line);border-left:3px solid var(--amber);
+           background:var(--panel);padding:12px 14px;font-size:var(--s0);color:var(--dim);line-height:1.6}
+  .sponsor a{color:var(--amber);text-decoration:none;border-bottom:1px solid currentColor}
+  .foot{margin:14px var(--gut) 0;font-size:var(--s0);color:#4e6570;line-height:1.8}
+  .foot a{color:var(--dim)}
 </style></head>
-<body><main>
-  <h1>Nearby</h1>
-  <p class="lede">Find the people you came with, inside a venue — a mela, a mall, a stadium. Coarse proximity from anchor check-ins: <strong>no GPS, no coordinates, no location history.</strong></p>
-  <a class="cta" href="play/index.html">Open Nearby</a>
+<body><div class="board">
+  <div class="bar"><span>venue board · coarse proximity</span><span><b>3</b> tiers · <b>0</b> coordinates</span></div>
 
-  <p class="gap"><strong>The LAN transport is not built.</strong> The demo runs the whole room on one device so the proximity logic can be seen and tested. A real link between phones over the venue network is named as absent rather than faked — a demo that pretended to do it would be a lie about the one thing this app exists for.</p>
-
-  <div class="status">
-    <b>Status</b>
-    Built and working: rooms and members; anchor check-ins that <em>replace</em> the last one; three proximity tiers (nearest · same zone · far) from a hop count over a venue graph; meet-point pins with a direction and an age; a lost-and-found board; a quick broadcast.
-    <br><b>Release</b>: Windows EXE, Android APK and Linux binary, built from this source in CI — <a href="https://github.com/drsamonline/app-nearby/releases/tag/app-latest">app-latest</a>.
-    <br><b>Not built</b>: the LAN transport, and therefore real multi-device presence. Also no QR joining — the room is created on one device.
+  <div class="head">
+    <div>
+      <h1>Nearby<span>.</span></h1>
+      <p>Find the people you came with, inside a venue, without GPS and without the internet.</p>
+    </div>
+    <div class="legend">
+      <div class="lg">nearest<b>same anchor</b></div>
+      <div class="lg">same zone<b>one hop</b></div>
+      <div class="lg">far<b>two hops</b></div>
+    </div>
   </div>
 
-  <h2>What it does</h2>
-  <ul>
-    <li>Puts members in a room and asks each to check in at a fixed anchor — a gate, a hall, a stall.</li>
-    <li>Works out how near someone is as one of three tiers, from how many anchors apart they are.</li>
-    <li>Drops a meet-point pin at an anchor, and shows each person a direction to it rather than a distance.</li>
-    <li>Carries a lost-and-found board and a quick “I'm at the main gate”.</li>
-  </ul>
+  <div class="venue">
+    <div class="anchors">
+      <div class="a near"><div class="k">main gate</div><div class="v">Aaji</div><div class="tier">nearest · same anchor</div></div>
+      <div class="a same"><div class="k">food court</div><div class="v">Ravi</div><div class="tier">same zone · one hop</div></div>
+      <div class="a far"><div class="k">far corner</div><div class="v">Meena</div><div class="tier">far · two hops</div></div>
+      <div class="a"><div class="k">main hall</div><div class="v">—</div><div class="tier">nobody checked in</div></div>
+    </div>
+    <div class="pin">meet-point pinned at the main gate · one anchor away · dropped 2 min ago</div>
+  </div>
 
-  <h2>What it will not do</h2>
-  <ul>
-    <li><strong>Store a coordinate.</strong> There is no latitude, longitude, distance in metres or bearing anywhere in the engine.</li>
-    <li><strong>Keep a location history.</strong> A check-in replaces the last one.</li>
-    <li><strong>Use GPS or the internet.</strong> No <code>fetch</code>, no endpoint; CSP <code>connect-src 'none'</code>.</li>
-    <li><strong>Claim a transport it does not have.</strong> The LAN link is named as absent on the page and in the README.</li>
-  </ul>
+  <div class="cols">
+    <div>
+      <h2>Three words, never a number</h2>
+      <p>Proximity is a hop count over named anchors, reduced to <em>nearest</em>, <em>same zone</em> or <em>far</em>. The hop count is computed and never shown.</p>
+    </div>
+    <div>
+      <h2>No trail</h2>
+      <p>A check-in replaces the last one, so there is no location history — and no member's exact coordinates exist anywhere in the room.</p>
+    </div>
+    <div>
+      <h2>Get it</h2>
+      <p>Offline. The LAN transport is not built, and the page says so.</p>
+      <a class="go" href="play/index.html">open the board →</a>
+    </div>
+  </div>
 
-  <h2>When things go wrong</h2>
-  <table>
-    <tr><th>Case</th><th>What happens</th></tr>
-    <tr><td>Bad input</td><td>A room or member with no name, a check-in at an anchor that does not exist, a pin not at an anchor, a broadcast with no words — each refused with the field named.</td></tr>
-    <tr><td>No network</td><td>Nothing changes; there is no network code at all.</td></tr>
-    <tr><td>Storage full or unavailable</td><td><strong>NOT SAVED</strong>, and the room on screen is unchanged.</td></tr>
-    <tr><td>Corrupt saved state</td><td>Reported and offered for export; never replaced with an empty room.</td></tr>
-  </table>
-
-  <h2>How to run it</h2>
-  <ul>
-    <li><strong>Here</strong>: <a href="play/index.html">play/index.html</a>, or install it from your browser's menu.</li>
-    <li><strong>Offline file</strong>: open <code>docs/play/index.html</code> straight from disk.</li>
-    <li><strong>Tests</strong>: <code>node tests/self-tests.js</code>.</li>
-  </ul>
-
-  <footer>PolyForm Noncommercial 1.0.0 · (c) 2026 Dr Sohil Momin · <a href="https://github.com/drsamonline/app-nearby">source</a></footer>
-</main></body></html>
+  <div class="sponsor">
+    <strong>Sponsor this app.</strong> Free, offline, no account. If it earned its keep:
+    <a href="https://github.com/sponsors/drsamonline">github.com/sponsors/drsamonline</a>
+  </div>
+  <p class="foot">Windows · Android · Linux at <a href="https://github.com/drsamonline/app-nearby/releases/tag/app-latest">app-latest</a> ·
+  PolyForm Noncommercial 1.0.0 · (c) 2026 Dr Sohil Momin</p>
+</div></body></html>
